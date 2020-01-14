@@ -21,7 +21,7 @@ const PostList = () => {
         <div>
             {posts.map(post => (
                 <Row style={{ margin: '50px 0' }} key={post.id}>
-                    <Col>
+                    <Col xs={{ size: 8, offset: 2 }}>
                         <BlogPost post={post} />
                     </Col>
                 </Row>
