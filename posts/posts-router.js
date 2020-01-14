@@ -21,6 +21,7 @@ router.post('/', (req, res) => {
     }
 })
 
+// posts a comment, returns an id
 router.post('/:id/comments', (req, res) => {
     const id = req.params.id
     
@@ -125,6 +126,37 @@ router.get('/:id/comments', (req, res) => {
                 message: 'The post information could not be retrieved.'
             })
         })    
+})
+
+// deletes a post by id and returns the number of posts deleted
+router.delete('/:id', (req, res) => {
+    const id = req.params.id
+
+    // check if post exists
+    Posts.findById(id)
+        .then(post => {
+            if (post.length === 0) {
+                res.status(404).json({
+                    message: 'The post with the specified ID does not exist.'
+                })
+            } else {
+                Posts.remove(id)
+                    .then(post => {
+                        res.status(200).json(post)
+                    })
+                    .catch(err => {
+                        res.status(500).json({
+                            message: 'The post could not be removed.'
+                        })
+                    })
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                message: 'The post information could not be retrieved.'
+            })
+        })
 })
 
 module.exports = router
