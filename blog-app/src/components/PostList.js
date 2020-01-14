@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Container } from 'reactstrap'
+import { Row, Col } from 'reactstrap'
 
 import BlogPost from './BlogPost'
 
@@ -17,15 +17,17 @@ const PostList = () => {
             })
     }, [])
 
-    return (
-        <Container>
+    return (        
+        <div>
             {posts.map(post => (
-                <BlogPost
-                    key={post.id}
-                    post={post}
-                />
+                <Row style={{ margin: '50px 0' }} key={post.id}>
+                    <Col>
+                        <BlogPost post={post} />
+                    </Col>
+                </Row>
             ))}
-        </Container>
+        </div>
+            
     )
 }
 

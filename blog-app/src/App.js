@@ -1,12 +1,13 @@
 import React from 'react'
+import { Container } from 'reactstrap'
 
 import PostList from './components/PostList'
 
 function App() {
   return (
-    <div>
+    <Container>
       <PostList />
-    </div>
+    </Container>
   )
 }
 
