@@ -7,29 +7,33 @@ import {
     CardTitle as ReactCardTitle,
     CardText,
     Media as ReactMedia,
-    Collapse,
     Button,
     Form,
     FormGroup,
-    Label,
-    Input
+    Input,
+    Spinner
 } from 'reactstrap'
 
 const CardTitle = styled(ReactCardTitle)`
     font-size: 1.5rem;
+    width: 100%;
 `
 
 const Media = styled(ReactMedia)`
-    margin-top: 10px;
+    margin-bottom: 10px;
 `
 
 const BlogPost = props => {
+    const [isFetching, setIsFetching] = useState(false)
     const [comments, setComments] = useState([])
     const [commenting, setCommenting] = useState(false)
     const [commentValues, setCommentValues] = useState({ text: '', post_id: props.post.id })
 
     const startComment = () => setCommenting(true)
-    const cancelComment = () => setCommenting(false)
+    const cancelComment = e => {
+        e.preventDefault()
+        setCommenting(false)
+    }
 
     const handleChange = e => {
         setCommentValues({
@@ -60,9 +64,11 @@ const BlogPost = props => {
     }
 
     useEffect(() => {
+        setIsFetching(true)
         axios.get(`http://localhost:5000/api/posts/${props.post.id}/comments`)
             .then(res => {
                 setComments(res.data)
+                setIsFetching(false)
             })
             .catch(err => {
                 console.log(err)
@@ -71,11 +77,12 @@ const BlogPost = props => {
 
     return (
         <Card>
-            <CardBody>
+            <CardBody style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <CardTitle>{props.post.title}</CardTitle>
-                <CardText>{props.post.contents}</CardText>                              
+                <CardText style={{ width: '100%' }}>{props.post.contents}</CardText>
+                {comments.length > 0 && <h5 style={{ width: '100%', marginBottom: 15 }}>Comments</h5>}                            
                 {comments.map(comment => (
-                    <Media key={comment.id}>
+                    <Media key={comment.id} style={{ width: '90%' }}>
                         <Media left href="#">
                             <Media object src="https://picsum.photos/64" alt="Generic placeholder" />
                         </Media>
@@ -84,11 +91,12 @@ const BlogPost = props => {
                         </Media>
                     </Media>
                 ))}
+                {isFetching && <Spinner color='dark' style={{ margin: 50 }} />}
                 {commenting && (
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit} style={{ width: '80%' }}>
                         <FormGroup>
                             <Input
-                                type='text'
+                                type='textarea'
                                 name='text'
                                 id='comment'
                                 placeholder='Comment here'
